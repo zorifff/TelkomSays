@@ -1,0 +1,14 @@
+{
+  "grapari": "GraPARI adalah pusat layanan pelanggan Telkomsel.",
+  "indihome": "IndiHome adalah layanan digital internet rumah.",
+  "telkomsel orbit": "Layanan internet rumah berbasis modem WiFi dari Telkomsel yang mengandalkan koneksi jaringan seluler 4G/5G, bukan kabel fiber.",
+  "fup (fair usage policy)": "Batas pemakaian wajar penggunaan data internet unlimited. Jika kuota pemakaian sudah melewati batas FUP, kecepatan internet biasanya akan diturunkan oleh sistem.",
+  "volte (voice over lte)": "Layanan panggilan suara yang menggunakan jaringan 4G LTE. Fitur ini membuat suara telepon lebih jernih dan pengguna tetap bisa lancar internetan saat sedang menelepon.",
+  "bts (base transceiver station)": "Menara pemancar atau antena seluler yang berfungsi menghubungkan perangkat (HP) pelanggan dengan jaringan operator utama.",
+  "bandwidth": "Kapasitas maksimal sebuah jalur komunikasi untuk mentransfer data dalam satu waktu (biasanya diukur dalam Mbps). Ibarat lebar jalan raya; semakin lebar bandwidth, semakin banyak data yang bisa lewat tanpa macet.",
+  "latency (ping)": "Waktu jeda (dalam satuan milisecond/ms) yang dibutuhkan data untuk berpindah dari perangkatmu ke server dan kembali lagi. Semakin kecil angka ping, semakin responsif internetnya (sangat penting untuk gaming).",
+  "apn (access point name)": "Pengaturan wajib di smartphone yang berfungsi sebagai \"gerbang\" penghubung antara jaringan operator seluler dengan jaringan internet publik.",
+  "roaming data": "Layanan yang memungkinkan pelanggan tetap bisa terhubung ke internet, SMS, atau telepon saat berada di luar negeri dengan menumpang pada jaringan operator mitra di negara tersebut.",
+  "fiber optic": "Teknologi kabel jaringan yang terbuat dari serat kaca atau plastik sangat halus. Mentransmisikan data menggunakan cahaya sehingga memberikan kecepatan internet super tinggi dan stabil (biasa digunakan pada jaringan Telkom).",
+  "kuota roamax": "Paket kuota roaming internasional khusus dari Telkomsel yang memungkinkan pelanggan internetan di berbagai negara tanpa perlu repot mengganti kartu SIM lokal."
+}
