@@ -102,8 +102,16 @@ bot.on('message', (msg) => {
       if (keys.length === 0) {
         bot.sendMessage(chatId, "📂 Database utama saat ini masih kosong.");
       } else {
-        const listText = keys.map((k, i) => `${i + 1}. ${k}`).join("\n");
-        bot.sendMessage(chatId, `📂 *Daftar Istilah di Database Utama:*\n\n${listText}`, { parse_mode: 'Markdown' });
+        // Mengurutkan dari A ke Z (Alphabetical order)
+        const sortedKeys = keys.sort((a, b) => a.localeCompare(b));
+        
+        // Membentuk daftar teks yang rapi dan dikapitalisasi
+        const listText = sortedKeys.map((k, i) => {
+          const judul = k.replace(/\b\w/g, l => l.toUpperCase());
+          return `${i + 1}. ${judul}`;
+        }).join("\n");
+
+        bot.sendMessage(chatId, `📂 *Daftar Istilah di Database Utama (A-Z):*\n\n${listText}`, { parse_mode: 'Markdown' });
       }
     } catch (e) {
       bot.sendMessage(chatId, "❌ Gagal membaca database utama.");
@@ -208,16 +216,46 @@ bot.on('message', (msg) => {
   // -- LOGIKA MENCARI ISTILAH (Mode Baca) --
   const kataKunci = text.toLowerCase().trim();
   let penjelasan = "";
+  let istilahDitemukan = text;
 
   try {
     const dbUtama = JSON.parse(fs.readFileSync(DB_UTAMA_PATH, 'utf-8'));
 
+    // 1. Pencarian persis (Exact match)
     if (dbUtama[kataKunci]) {
       penjelasan = dbUtama[kataKunci];
+      istilahDitemukan = kataKunci;
     } else {
       for (const [key, value] of Object.entries(dbUtama)) {
         if (key.toLowerCase() === kataKunci) {
           penjelasan = value;
+          istilahDitemukan = key;
+          break;
+        }
+      }
+    }
+
+    // 2. Pencarian singkatan/kepanjangan dalam tanda kurung (Partial match)
+    if (penjelasan === "") {
+      for (const [key, value] of Object.entries(dbUtama)) {
+        const lowerKey = key.toLowerCase();
+        // Memecah berdasarkan tanda kurung: "isp (internet service provider)" -> ["isp", "internet service provider"]
+        const parts = lowerKey.split('(').map(p => p.replace(')', '').trim());
+        if (parts.includes(kataKunci)) {
+          penjelasan = value;
+          istilahDitemukan = key;
+          break;
+        }
+      }
+    }
+
+    // 3. Pencarian sebagian kata (Substring match)
+    if (penjelasan === "") {
+      for (const [key, value] of Object.entries(dbUtama)) {
+        const lowerKey = key.toLowerCase();
+        if (lowerKey.includes(kataKunci)) {
+          penjelasan = value;
+          istilahDitemukan = key;
           break;
         }
       }
@@ -227,7 +265,9 @@ bot.on('message', (msg) => {
   }
 
   if (penjelasan !== "") {
-    bot.sendMessage(chatId, `📖 *${text}*\n\n${penjelasan}`, { parse_mode: 'Markdown' });
+    // Mempercantik tampilan judul (Huruf Kapital Tiap Kata)
+    const judul = istilahDitemukan.replace(/\b\w/g, l => l.toUpperCase());
+    bot.sendMessage(chatId, `📖 *${judul}*\n\n${penjelasan}`, { parse_mode: 'Markdown' });
   } else {
     bot.sendMessage(chatId, `Mohon maaf, istilah *${text}* belum ditemukan. \n\nKamu bisa mengusulkan istilah ini dengan perintah:\n\`/tambah ${text}: [Penjelasan]\``, { parse_mode: 'Markdown' });
   }
