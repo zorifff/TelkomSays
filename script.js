@@ -45,7 +45,7 @@ bot.onText(/\/start/, (msg) => {
   const welcomeText = "Halo! Selamat datang di bot *Telkom Says*.\n\n" +
     "Silakan pilih menu di bawah ini atau langsung ketikkan istilah yang ingin dicari:\n" +
     "1️⃣ *Mencari Istilah*: Ketik langsung istilahnya.\n" +
-    "2️⃣ *Menambahkan Istilah*: Gunakan format `/tambah [Istilah]: [Penjelasan]`";
+    "2️⃣ *Menambahkan Istilah*: Gunakan format `/add [Istilah]: [Penjelasan]`";
 
   const options = {
     parse_mode: 'Markdown',
@@ -70,7 +70,7 @@ bot.on('callback_query', (callbackQuery) => {
   if (data === "menu_cari") {
     bot.sendMessage(chatId, "Silakan langsung ketikkan istilah yang ingin kamu cari. Contoh: *GraPARI*", { parse_mode: 'Markdown' });
   } else if (data === "menu_tambah") {
-    bot.sendMessage(chatId, "Silakan gunakan format berikut untuk menambah istilah:\n`/tambah [Istilah]: [Penjelasan]`\n\nContoh:\n`/tambah FYP: For You Page`", { parse_mode: 'Markdown' });
+    bot.sendMessage(chatId, "Silakan gunakan format berikut untuk menambah istilah:\n`/add [Istilah]: [Penjelasan]`\n\nContoh:\n`/add FYP: For You Page`", { parse_mode: 'Markdown' });
   }
   bot.answerCallbackQuery(callbackQuery.id);
 });
@@ -91,11 +91,22 @@ bot.on('message', (msg) => {
   if (text.startsWith('/start')) return;
 
   // -- LOGIKA ADMIN: MELIHAT ISI DATABASE --
-  if (text === '/listdb') {
+  if (text === '/listdb' || text.startsWith('/listdb ')) {
     if (msg.from.id !== ADMIN_ID) {
       bot.sendMessage(chatId, "⛔ Maaf, perintah ini khusus untuk Admin.");
       return;
     }
+
+    const args = text.split(' ');
+    let page = 1;
+    if (args.length > 1) {
+      const parsedPage = parseInt(args[1], 10);
+      if (!isNaN(parsedPage) && parsedPage > 0) {
+        page = parsedPage;
+      }
+    }
+    const ITEMS_PER_PAGE = 50;
+
     try {
       const dbUtama = JSON.parse(fs.readFileSync(DB_UTAMA_PATH, 'utf-8'));
       const keys = Object.keys(dbUtama);
@@ -104,14 +115,25 @@ bot.on('message', (msg) => {
       } else {
         // Mengurutkan dari A ke Z (Alphabetical order)
         const sortedKeys = keys.sort((a, b) => a.localeCompare(b));
-        
+
+        const totalItems = sortedKeys.length;
+        const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+
+        if (page > totalPages) {
+          page = totalPages;
+        }
+
+        const startIndex = (page - 1) * ITEMS_PER_PAGE;
+        const endIndex = startIndex + ITEMS_PER_PAGE;
+        const paginatedKeys = sortedKeys.slice(startIndex, endIndex);
+
         // Membentuk daftar teks yang rapi dan dikapitalisasi
-        const listText = sortedKeys.map((k, i) => {
+        const listText = paginatedKeys.map((k, i) => {
           const judul = k.replace(/\b\w/g, l => l.toUpperCase());
-          return `${i + 1}. ${judul}`;
+          return `${startIndex + i + 1}. ${judul}`;
         }).join("\n");
 
-        bot.sendMessage(chatId, `📂 *Daftar Istilah di Database Utama (A-Z):*\n\n${listText}`, { parse_mode: 'Markdown' });
+        bot.sendMessage(chatId, `📂 *Daftar Istilah (Halaman ${page}/${totalPages}):*\n\n${listText}\n\n_Ketik /listdb [angka] untuk melihat halaman lain._`, { parse_mode: 'Markdown' });
       }
     } catch (e) {
       bot.sendMessage(chatId, "❌ Gagal membaca database utama.");
@@ -130,8 +152,8 @@ bot.on('message', (msg) => {
       if (usulanData.length === 0) {
         bot.sendMessage(chatId, "📝 Tidak ada antrean usulan saat ini.");
       } else {
-        const listText = usulanData.map((u, i) => `${i + 1}. *${u.istilah}* (dari ${u.pengusul})`).join("\n");
-        bot.sendMessage(chatId, `📝 *Daftar Antrean Usulan:*\n\n${listText}\n\nGunakan \`/acc [istilah]\` untuk menyetujui.`, { parse_mode: 'Markdown' });
+        const listText = usulanData.map((u, i) => `${i + 1}. *${u.istilah}* (dari ${u.pengusul})\n   └ ${u.penjelasan}`).join("\n\n");
+        bot.sendMessage(chatId, `📝 *Daftar Antrean Usulan:*\n\n${listText}\n\nGunakan \`/acc [istilah]\` untuk menyetujui atau \`/reject [istilah]\` untuk menolak.`, { parse_mode: 'Markdown' });
       }
     } catch (e) {
       bot.sendMessage(chatId, "❌ Gagal membaca database usulan.");
@@ -180,13 +202,49 @@ bot.on('message', (msg) => {
     return;
   }
 
+  // -- LOGIKA ADMIN: MENOLAK USULAN --
+  if (text.startsWith('/reject')) {
+    // Pengecekan apakah yang chat adalah admin
+    if (msg.from.id !== ADMIN_ID) {
+      bot.sendMessage(chatId, "⛔ Maaf, perintah ini khusus untuk Admin.");
+      return;
+    }
+
+    const istilahTolak = text.substring(7).trim().toLowerCase();
+    if (!istilahTolak) {
+      bot.sendMessage(chatId, "⚠️ Format salah. Gunakan: `/reject [istilah]`\n\nContoh: `/reject gatra`", { parse_mode: 'Markdown' });
+      return;
+    }
+
+    try {
+      let usulanData = JSON.parse(fs.readFileSync(USULAN_PATH, 'utf-8'));
+      const index = usulanData.findIndex(u => u.istilah.toLowerCase() === istilahTolak);
+
+      if (index !== -1) {
+        const dataUsulan = usulanData[index];
+
+        // Hapus dari file usulan
+        usulanData.splice(index, 1);
+        fs.writeFileSync(USULAN_PATH, JSON.stringify(usulanData, null, 2));
+
+        bot.sendMessage(chatId, `🗑️ Berhasil! Istilah *${dataUsulan.istilah}* telah ditolak dan dihapus dari antrean usulan.`, { parse_mode: 'Markdown' });
+      } else {
+        bot.sendMessage(chatId, `❌ Istilah *${istilahTolak}* tidak ditemukan di antrean usulan.`, { parse_mode: 'Markdown' });
+      }
+    } catch (e) {
+      console.error(e);
+      bot.sendMessage(chatId, "❌ Terjadi kesalahan saat memproses data.");
+    }
+    return;
+  }
+
   // -- LOGIKA MENAMBAH ISTILAH (Mode Tulis) --
-  if (text.startsWith('/tambah')) {
-    const content = text.substring(8).trim();
+  if (text.startsWith('/add')) {
+    const content = text.substring(5).trim();
     const separatorIndex = content.indexOf(":");
 
     if (separatorIndex === -1) {
-      bot.sendMessage(chatId, "❌ Format salah. Silakan gunakan format:\n`/tambah [Istilah]: [Penjelasan]`", { parse_mode: 'Markdown' });
+      bot.sendMessage(chatId, "❌ Format salah. Silakan gunakan format:\n`/add [Istilah]: [Penjelasan]`", { parse_mode: 'Markdown' });
       return;
     }
 
@@ -269,7 +327,7 @@ bot.on('message', (msg) => {
     const judul = istilahDitemukan.replace(/\b\w/g, l => l.toUpperCase());
     bot.sendMessage(chatId, `📖 *${judul}*\n\n${penjelasan}`, { parse_mode: 'Markdown' });
   } else {
-    bot.sendMessage(chatId, `Mohon maaf, istilah *${text}* belum ditemukan. \n\nKamu bisa mengusulkan istilah ini dengan perintah:\n\`/tambah ${text}: [Penjelasan]\``, { parse_mode: 'Markdown' });
+    bot.sendMessage(chatId, `Mohon maaf, istilah *${text}* belum ditemukan. \n\nKamu bisa mengusulkan istilah ini dengan perintah:\n\`/add ${text}: [Penjelasan]\``, { parse_mode: 'Markdown' });
   }
 });
 
