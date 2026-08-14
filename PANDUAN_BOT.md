@@ -1,6 +1,6 @@
-# 📖 Panduan Lengkap Bot Telegram "Telkom Says"
+# 📖 Panduan Lengkap Bot Telegram "Telkomsel Says"
 
-Dokumen ini berisi panduan operasional lengkap untuk bot Telegram **Telkom Says**, mencakup panduan penggunaan untuk pengguna awam, panduan administratif untuk pengelola bot, panduan teknis pengembang (*developer*), serta panduan migrasi & hosting 24 jam di Mini PC.
+Dokumen ini berisi panduan operasional lengkap untuk bot Telegram **Telkomsel Says**, mencakup panduan penggunaan untuk pengguna awam, panduan administratif untuk pengelola bot, panduan teknis pengembang (*developer*), serta panduan migrasi & hosting 24 jam di Mini PC.
 
 ---
 
@@ -8,7 +8,7 @@ Dokumen ini berisi panduan operasional lengkap untuk bot Telegram **Telkom Says*
 
 ### 1.1 Cara Mengakses Bot
 1. Buka aplikasi **Telegram** di HP atau Desktop.
-2. Cari username bot yang telah dibuat di kolom pencarian Telegram (misalnya: `@telkom_says_bot`).
+2. Cari username bot yang telah dibuat di kolom pencarian Telegram (misalnya: `@telkomsel_says_bot`).
 3. Klik tombol **Start** di bagian bawah layar atau ketik perintah `/start`.
 
 ### 1.2 Perintah Pengguna (*User Commands*)
@@ -64,7 +64,7 @@ Akses admin dibatasi secara otomatis oleh bot. Hanya pengguna dengan Telegram ID
 ---
 
 ### 2.3 Cara Menjadikan Seseorang sebagai Admin Baru
-1. Minta calon admin baru membuka aplikasi Telegram dan mencari bot **Telkom Says**.
+1. Minta calon admin baru membuka aplikasi Telegram dan mencari bot **Telkomsel Says**.
 2. Minta admin baru tersebut mengetik perintah `/myid`.
 3. Bot akan membalas pesan berisi kode angkanya, contoh: `ID Telegram kamu adalah: 123456789`.
 4. Salin angka ID tersebut.
@@ -74,7 +74,7 @@ Akses admin dibatasi secara otomatis oleh bot. Hanya pengguna dengan Telegram ID
    BOT_TOKEN=789123456:AAFx... (Token Bot Telegram)
    ADMIN_ID=123456789
    ```
-7. *Restart* bot (matikan terminal dan jalankan kembali `node script.js` atau `pm2 restart telkomsays-bot`). Sekarang admin baru tersebut sudah memiliki akses penuh.
+7. *Restart* bot (matikan terminal dan jalankan kembali `node script.js` atau `pm2 restart telkomsel_says_bot`). Sekarang admin baru tersebut sudah memiliki akses penuh.
 
 ---
 
@@ -192,12 +192,12 @@ npm install -g pm2
 
 #### Langkah 2: Jalankan Bot dengan PM2
 ```bash
-pm2 start script.js --name "telkomsays-bot"
+pm2 start script.js --name "telkomsel_says_bot"
 ```
 *Bot sekarang sudah berjalan di latar belakang!*
 
 > **💡 Catatan Multi-Aplikasi PM2:**  
-> Jika Anda sudah menggunakan PM2 untuk menjalankan aplikasi lain (seperti *website* atau *backend API*), **PM2 tetap bisa digunakan bersamaan secara aman**. PM2 dirancang untuk mengelola banyak proses sekaligus. Bot `telkomsays-bot` akan berjalan berdampingan dengan aplikasi web Anda tanpa saling mengganggu.
+> Jika Anda sudah menggunakan PM2 untuk menjalankan aplikasi lain (seperti *website* atau *backend API*), **PM2 tetap bisa digunakan bersamaan secara aman**. PM2 dirancang untuk mengelola banyak proses sekaligus. Bot `telkomsel_says_bot` akan berjalan berdampingan dengan aplikasi web Anda tanpa saling mengganggu.
 
 #### Langkah 3: Konfigurasi Auto-Start saat Mini PC Menyala / Restart
 
@@ -222,10 +222,10 @@ pm2 start script.js --name "telkomsays-bot"
 | Perintah | Fungsi |
 | :--- | :--- |
 | `pm2 status` | Melihat status bot (apakah statusnya `online` atau `errored`). |
-| `pm2 logs telkomsays-bot` | Melihat log pesan / error bot secara langsung (*real-time*). |
-| `pm2 restart telkomsays-bot` | Mengulang (*restart*) bot (misal setelah mengubah isi `.env` atau `script.js`). |
-| `pm2 stop telkomsays-bot` | Menghentikan bot sementara. |
-| `pm2 delete telkomsays-bot` | Menghapus bot dari daftar jalannya PM2. |
+| `pm2 logs telkomsel_says_bot` | Melihat log pesan / error bot secara langsung (*real-time*). |
+| `pm2 restart telkomsel_says_bot` | Mengulang (*restart*) bot (misal setelah mengubah isi `.env` atau `script.js`). |
+| `pm2 stop telkomsel_says_bot` | Menghentikan bot sementara. |
+| `pm2 delete telkomsel_says_bot` | Menghapus bot dari daftar jalannya PM2. |
 
 ---
 

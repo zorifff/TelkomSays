@@ -42,7 +42,7 @@ const bot = new TelegramBot(token, { polling: true });
 // 1. Menu Utama (Perintah /start)
 bot.onText(/\/start/, (msg) => {
   const chatId = msg.chat.id;
-  const welcomeText = "Halo! Selamat datang di bot *Telkom Says*.\n\n" +
+  const welcomeText = "Halo! Selamat datang di bot *Telkomsel Says*.\n\n" +
     "Silakan pilih menu di bawah ini atau langsung ketikkan istilah yang ingin dicari:\n" +
     "1️⃣ *Mencari Istilah*: Ketik langsung istilahnya.\n" +
     "2️⃣ *Menambahkan Istilah*: Gunakan format `/add [Istilah]: [Penjelasan]`";

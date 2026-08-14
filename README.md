@@ -1,38 +1,34 @@
-# Telegram Data Collector Bot
+# Telkomsel Says Telegram Bot
 
-Telegram Data Collector Bot is a Node.js-based Telegram bot that facilitates the collection of user-submitted data and logs it into a CSV file. It provides a simple and efficient way to interact with users via Telegram, enabling them to submit data entries which are then securely stored in a structured format.
+**Telkomsel Says** adalah bot Telegram berbasis Node.js yang berfungsi sebagai kamus istilah interaktif dan pengumpul data usulan istilah dari pengguna.
 
-## Features
+---
 
-- **Data Collection**: Collects user-submitted data via Telegram messages.
-- **CSV Logging**: Logs submitted data into a CSV file for easy management.
-- **Interactive Messaging**: Engages users with interactive prompts for seamless data submission.
-- **Error Handling**: Ensures robustness with error handling for data submission and logging processes.
+## 📖 Panduan Lengkap
 
-## Installation
+Panduan lengkap operasional dan teknis telah tersedia di file **[PANDUAN_BOT.md](file:///d:/Magang/TelkomSays/PANDUAN_BOT.md)**, yang mencakup:
+1. **Panduan Pengguna Umum (Awam)**: Cara akses, mencari istilah, dan mengusulkan kata baru.
+2. **Panduan Admin**: Perintah `/listusulan`, `/acc`, `/reject`, `/listdb`, cara tambah admin baru (`ADMIN_ID`), dan hapus kata.
+3. **Panduan Pengembang (Developer)**: Struktur proyek, dependency, dan alur data.
+4. **Panduan Deployment 24 Jam di Mini PC**: Konfigurasi **PM2**, auto-restart saat reboot, dan dukungan multi-aplikasi.
 
-To run the bot locally, follow these steps:
+---
 
-1. Clone the repository: `git clone https://github.com/mesamirh/TelegramDataCollectorBot.git`
-2. Install dependencies: `npm install`
-3. Set your Telegram bot token in the script (`botToken` variable).
-4. Start the bot: `node script.js`
+## Quick Start
 
-## Usage
+```bash
+# 1. Install dependencies
+npm install
 
-1. Start the bot by sending `/start` in your Telegram chat.
-2. Follow the bot's instructions to submit data.
-3. Data submissions will be logged into `all_user_data.csv`.
+# 2. Siapkan file .env (isi BOT_TOKEN dan ADMIN_ID)
 
-## Configuration
+# 3. Jalankan bot secara lokal
+node script.js
 
-- Ensure Node.js and npm are installed.
-- Replace `botToken` with your actual Telegram bot token in `index.js`.
-
-## Contributing
-
-Contributions are welcome! Fork the repository and submit a pull request with your enhancements.
+# 4. Jalankan bot di PM2 (24 Jam)
+pm2 start script.js --name "telkomsel_says_bot"
+```
 
 ## License
 
-This project is licensed under the [MIT License](./LICENSE) - see the LICENSE file for details.
+This project is licensed under the [MIT License](./LICENSE).
