@@ -1,4 +1,8 @@
 {
+  "name": "telkomsel_says",
+  "version": "1.0.0",
+  "description": "Bot Telegram Kamus & Pengumpul Istilah Telkomsel Says",
+  "main": "script.js",
   "dependencies": {
     "csv-writer": "^1.6.0",
     "dotenv": "^17.4.2",
