@@ -182,8 +182,21 @@ npm install
 
 ---
 
-### 4.4 Menjalankan Bot 24 Jam Menggunakan PM2 (Process Manager)
-Jika Anda hanya menjalankan bot dengan `node script.js`, bot akan mati begitu terminal ditutup atau komputer di-restart. Untuk menjalankan 24 jam secara otomatis di latar belakang (*background*), gunakan **PM2**.
+### 4.4 Menjalankan Bot di Mini PC
+
+Anda memiliki 2 pilihan untuk menjalankan bot di Mini PC:
+
+#### Opsi A: Menggunakan File Script `run_bot.bat` (Metode Mudah - Tanpa PM2)
+Telah disediakan file [run_bot.bat](file:///d:/Magang/TelkomSays/run_bot.bat) di dalam folder proyek.
+1. Cukup klik ganda (*double click*) file `run_bot.bat` untuk menjalankan bot.
+2. **Agar otomatis jalan saat Windows di-restart:**
+   - Tekan `Win + R` di keyboard ➡️ ketik `shell:startup` ➡️ Enter.
+   - Buat *shortcut* dari file `run_bot.bat` ke dalam folder Startup tersebut.
+
+---
+
+#### Opsi B: Menggunakan PM2 (Process Manager)
+Jika Anda menggunakan PM2 untuk menjalankan 24 jam secara otomatis di latar belakang (*background*):
 
 #### Langkah 1: Install PM2 secara Global
 ```bash
